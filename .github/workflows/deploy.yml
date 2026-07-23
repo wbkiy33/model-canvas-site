@@ -1,0 +1,40 @@
+name: Deploy Model Canvas
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified production build
+        env:
+          BUILD_URL: "https://sdmntprnznorth.oaiusercontent.com/files/00000000-3664-820b-9c36-404a8e36b631/raw?se=2026-07-23T17:54:59Z&sp=r&sv=2026-02-06&sr=b&scid=b7b8e77f-b373-51fd-ad91-24df34d9393e&skoid=d5627e4c-566b-4761-a954-54993b0ed17b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-23T01:50:48Z&ske=2026-07-25T01:50:48Z&sks=b&skv=2026-02-06&sig=%2BTZ2fpr3jXgqEhlg/wIYHyuj8%2B%2BZjEtgL/7Z8Gi5hQ8%3D"
+        run: |
+          curl --fail --location "$BUILD_URL" --output build.zip
+          mkdir site
+          unzip -q build.zip -d site
+          test -f site/index.html
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
