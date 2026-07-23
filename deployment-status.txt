@@ -1,5 +1,5 @@
-download=failure
-configure=skipped
-upload=skipped
-deploy=skipped
-page_url=
+download=success
+configure=success
+upload=success
+deploy=success
+page_url=https://wbkiy33.github.io/model-canvas-site/
