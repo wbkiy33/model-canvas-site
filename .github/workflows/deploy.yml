@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths-ignore:
       - deployment-status.txt
+      - site/**
   workflow_dispatch:
 
 permissions:
@@ -31,10 +32,19 @@ jobs:
         env:
           BUILD_URL: "https://sdmntprnznorth.oaiusercontent.com/files/00000000-6d1c-820b-b5eb-bca0d270318a/raw?se=2026-07-23T18:21:51Z&sp=r&sv=2026-02-06&sr=b&scid=0e643eae-920d-52c0-ae2a-82e38f14ff14&skoid=d5627e4c-566b-4761-a954-54993b0ed17b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-07-22T19:20:39Z&ske=2026-07-24T19:20:39Z&sks=b&skv=2026-02-06&sig=mdXfOnvc9IA/EwpseFoL%2Bz6S9DwNKC3ld5XUiW%2BOr%2B0%3D"
         run: |
+          rm -rf site build.zip
           curl --fail --location "$BUILD_URL" --output build.zip
           mkdir site
           unzip -q build.zip -d site
           test -f site/index.html
+
+      - name: Persist verified production payload
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A site
+          git commit -m "Persist verified production payload [skip ci]" || exit 0
+          git push
 
       - name: Configure Pages
         id: configure
