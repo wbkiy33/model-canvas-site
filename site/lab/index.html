@@ -2,103 +2,16 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#ffffff" />
     <title>Model Canvas · Laboratory</title>
-    <style>
-      html, body, #canvas { width: 100%; height: 100%; margin: 0; }
-      * { box-sizing: border-box; }
-      html, body { overflow: hidden; background: #fff; overscroll-behavior: none; }
-      #canvas { position: fixed; inset: 0; overflow: hidden; background: #fff; touch-action: none; user-select: none; }
-      #world { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; pointer-events: none; }
-    </style>
+    <script type="module" crossorigin src="./assets/index-eYsaIlii.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CvFhqCJ3.css">
   </head>
   <body>
-    <main id="canvas" aria-label="Model Canvas Laboratory"><div id="world" aria-hidden="true"></div></main>
-    <script>
-      (() => {
-        const canvas = document.getElementById('canvas');
-        const world = document.getElementById('world');
-        const pointers = new Map();
-        const viewport = { x: 0, y: 0, zoom: 1 };
-        let pan = null;
-        let pinch = null;
-
-        const clamp = (value) => Math.min(4, Math.max(0.1, value));
-        const render = () => {
-          world.style.transform = `translate3d(${viewport.x}px, ${viewport.y}px, 0) scale(${viewport.zoom})`;
-        };
-        const midpoint = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-        const distance = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
-        const toWorld = ({ x, y }) => ({ x: (x - viewport.x) / viewport.zoom, y: (y - viewport.y) / viewport.zoom });
-        const beginPan = (pointerId, point) => {
-          pan = { pointerId, startX: point.x, startY: point.y, originX: viewport.x, originY: viewport.y };
-        };
-        const beginPinch = () => {
-          const entries = [...pointers.entries()].slice(0, 2);
-          const center = midpoint(entries[0][1], entries[1][1]);
-          pinch = {
-            pointerIds: [entries[0][0], entries[1][0]],
-            startDistance: Math.max(distance(entries[0][1], entries[1][1]), 1),
-            startZoom: viewport.zoom,
-            anchor: toWorld(center),
-          };
-          pan = null;
-        };
-
-        canvas.addEventListener('pointerdown', (event) => {
-          if (event.pointerType === 'mouse' && event.button !== 0) return;
-          const point = { x: event.clientX, y: event.clientY };
-          pointers.set(event.pointerId, point);
-          canvas.setPointerCapture(event.pointerId);
-          if (pointers.size === 1) beginPan(event.pointerId, point);
-          else if (pointers.size === 2) beginPinch();
-        });
-
-        canvas.addEventListener('pointermove', (event) => {
-          if (!pointers.has(event.pointerId)) return;
-          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-
-          if (pinch) {
-            const first = pointers.get(pinch.pointerIds[0]);
-            const second = pointers.get(pinch.pointerIds[1]);
-            if (!first || !second) return;
-            const center = midpoint(first, second);
-            const zoom = clamp(pinch.startZoom * distance(first, second) / pinch.startDistance);
-            viewport.zoom = zoom;
-            viewport.x = center.x - pinch.anchor.x * zoom;
-            viewport.y = center.y - pinch.anchor.y * zoom;
-          } else if (pan?.pointerId === event.pointerId) {
-            viewport.x = pan.originX + event.clientX - pan.startX;
-            viewport.y = pan.originY + event.clientY - pan.startY;
-          }
-          render();
-        });
-
-        const endPointer = (event) => {
-          pointers.delete(event.pointerId);
-          if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
-          pan = null;
-          pinch = null;
-          if (pointers.size === 1) {
-            const [pointerId, point] = pointers.entries().next().value;
-            beginPan(pointerId, point);
-          }
-        };
-        canvas.addEventListener('pointerup', endPointer);
-        canvas.addEventListener('pointercancel', endPointer);
-
-        canvas.addEventListener('wheel', (event) => {
-          event.preventDefault();
-          const point = { x: event.clientX, y: event.clientY };
-          const anchor = toWorld(point);
-          const zoom = clamp(viewport.zoom * Math.exp(-event.deltaY * 0.0015));
-          viewport.zoom = zoom;
-          viewport.x = point.x - anchor.x * zoom;
-          viewport.y = point.y - anchor.y * zoom;
-          render();
-        }, { passive: false });
-      })();
-    </script>
+    <div id="root"></div>
   </body>
 </html>
