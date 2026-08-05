@@ -127,39 +127,50 @@ Error generating stack: `+e.message+`
 
   .text-object {
     z-index: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px 16px;
-    overflow: auto;
-    border: 1px solid var(--space-border-color);
-    border-radius: var(--space-object-radius);
-    background: var(--space-surface-color);
-    box-shadow: var(--space-object-shadow);
+    display: block;
+    min-width: 1px;
+    min-height: 1em;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    color: var(--space-text-color);
+    background: transparent;
+    box-shadow: none;
+    cursor: move;
+    touch-action: none;
+    user-select: none;
   }
 
-  .text-object-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    color: var(--space-muted-color);
-    font-size: 11px;
-    line-height: 1;
+  .text-object[data-resize-mode="auto-width"] {
+    width: max-content;
+    height: auto;
   }
 
-  .text-object-kind {
-    font-size: 10px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+  .text-object[data-resize-mode="auto-height"] {
+    height: auto;
   }
 
   .text-object-content {
+    display: block;
     margin: 0;
     color: inherit;
-    font-size: 14px;
-    line-height: 1.52;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.45;
+    white-space: pre;
+  }
+
+  .text-object[data-resize-mode="auto-height"] .text-object-content,
+  .text-object[data-resize-mode="fixed"] .text-object-content {
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .text-object:focus-visible {
+    outline: none;
   }
 
   .connections-layer {
@@ -199,8 +210,156 @@ Error generating stack: `+e.message+`
     dominant-baseline: central;
   }
 }
-`,Fd=1100,Id=640,Ld=/^-?[_a-zA-Z]+[_a-zA-Z0-9-]*$/;function Rd(e,t){return[...e,...t.filter(e=>Ld.test(e))].join(` `)}function zd(e){return{left:e.x,top:e.y,width:e.width,height:e.height}}function Bd(e){return{x:e.geometry.x+e.geometry.width/2,y:e.geometry.y+e.geometry.height/2}}function Vd(e,t){let n=Bd(e),r=Bd(t),i=r.x-n.x,a=r.y-n.y;if(Math.abs(i)>=Math.abs(a)){let a=i>=0?1:-1,o={x:n.x+a*e.geometry.width/2,y:n.y},s={x:r.x-a*t.geometry.width/2,y:r.y},c=Math.max(56,Math.abs(s.x-o.x)*.42);return{d:`M ${o.x} ${o.y} C ${o.x+a*c} ${o.y}, ${s.x-a*c} ${s.y}, ${s.x} ${s.y}`,label:{x:(o.x+s.x)/2,y:(o.y+s.y)/2-10}}}let o=a>=0?1:-1,s={x:n.x,y:n.y+o*e.geometry.height/2},c={x:r.x,y:r.y-o*t.geometry.height/2},l=Math.max(56,Math.abs(c.y-s.y)*.42);return{d:`M ${s.x} ${s.y} C ${s.x} ${s.y+o*l}, ${c.x} ${c.y-o*l}, ${c.x} ${c.y}`,label:{x:(s.x+c.x)/2+12,y:(s.y+c.y)/2}}}function Hd({connection:e,source:t,target:n,markerId:r}){let i=Vd(t,n);return(0,Z.jsxs)(`g`,{className:Rd([`connection`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,"data-source-code":t.code,"data-target-code":n.code,role:`group`,"aria-label":`Связь ${e.code}: ${t.code} — ${n.code}. ${e.label}`,children:[(0,Z.jsx)(`path`,{className:`connection-line`,d:i.d,markerEnd:`url(#${r})`}),(0,Z.jsx)(`text`,{className:`connection-label`,x:i.label.x,y:i.label.y,children:e.label})]})}function Ud({space:e,userCss:t}){let n=[...e.regions,...e.textObjects],r=new Map(n.map(e=>[e.id,e])),i=`space-arrow-${e.id}`;return(0,Z.jsxs)(Z.Fragment,{children:[(0,Z.jsx)(`style`,{"data-space-style":`base`,children:Pd}),(0,Z.jsx)(`style`,{"data-space-style":`user`,children:t}),(0,Z.jsx)(`div`,{className:Rd([`space`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,children:(0,Z.jsxs)(`div`,{className:`space-world`,children:[(0,Z.jsxs)(`div`,{className:`space-identity`,"aria-label":`Пространство ${e.code}: ${e.title}`,children:[(0,Z.jsx)(`span`,{className:`space-identity-code`,children:e.code}),(0,Z.jsx)(`span`,{className:`space-identity-title`,children:e.title})]}),e.regions.map(e=>(0,Z.jsx)(`section`,{className:Rd([`region`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,style:zd(e.geometry),"aria-label":`Область ${e.code}: ${e.title}`,children:(0,Z.jsxs)(`header`,{className:`region-header`,children:[(0,Z.jsx)(`span`,{className:`element-code`,children:e.code}),(0,Z.jsx)(`h2`,{className:`region-title`,children:e.title})]})},e.id)),(0,Z.jsxs)(`svg`,{className:`connections-layer`,viewBox:`0 0 ${Fd} ${Id}`,preserveAspectRatio:`none`,"aria-label":`Связи Пространства`,children:[(0,Z.jsx)(`defs`,{children:(0,Z.jsx)(`marker`,{id:i,markerWidth:`8`,markerHeight:`8`,refX:`7`,refY:`4`,orient:`auto`,markerUnits:`strokeWidth`,children:(0,Z.jsx)(`path`,{className:`connection-arrow`,d:`M 0 0 L 8 4 L 0 8 Z`})})}),e.connections.map(e=>{let t=r.get(e.sourceElementId),n=r.get(e.targetElementId);return!t||!n?null:(0,Z.jsx)(Hd,{connection:e,source:t,target:n,markerId:i},e.id)})]}),e.textObjects.map(e=>(0,Z.jsxs)(`article`,{className:Rd([`text-object`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,style:zd(e.geometry),"aria-label":`Текстовый объект ${e.code}`,children:[(0,Z.jsxs)(`header`,{className:`text-object-header`,children:[(0,Z.jsx)(`span`,{className:`element-code`,children:e.code}),(0,Z.jsx)(`span`,{className:`text-object-kind`,children:`Текст`})]}),(0,Z.jsx)(`p`,{className:`text-object-content`,children:e.content})]},e.id))]})})]})}function Wd({space:e,userCss:t}){let n=(0,_.useRef)(null),[r,i]=(0,_.useState)(null);return(0,_.useLayoutEffect)(()=>{let e=n.current;e&&i(e.shadowRoot??e.attachShadow({mode:`open`}))},[]),(0,Z.jsx)(`div`,{className:`space-shadow-host`,ref:n,role:`region`,"aria-label":`Активное Пространство ${e.code}: ${e.title}`,children:r&&(0,Nd.createPortal)((0,Z.jsx)(Ud,{space:e,userCss:t}),r)})}var Gd={activeSpaceId:`space-001`,spaces:[{id:`space-001`,code:`S-001`,kind:`space`,title:`Лаборатория стилей`,cssClasses:[`demo-space`],regions:[{id:`region-001`,code:`A-001`,kind:`region`,title:`Совместное исследование`,cssClasses:[`research-area`],geometry:{x:70,y:76,width:940,height:500}}],textObjects:[{id:`text-001`,code:`X-001`,kind:`text`,content:`Идея: Пространство является общей рабочей средой человека и ИИ.`,cssClasses:[`idea`],geometry:{x:132,y:156,width:256,height:152}},{id:`text-002`,code:`X-002`,kind:`text`,content:`Вопрос: какие свойства должны быть частью модели, а какие — только представлением?`,cssClasses:[`question`],geometry:{x:462,y:156,width:286,height:152}},{id:`text-003`,code:`X-003`,kind:`text`,content:`Решение: пользовательский CSS хранится отдельно и не изменяет смысловые данные.`,cssClasses:[`decision`],geometry:{x:294,y:378,width:336,height:142}}],connections:[{id:`connection-001`,code:`E-001`,kind:`connection`,sourceElementId:`text-001`,targetElementId:`text-002`,label:`уточняет`,cssClasses:[`main-flow`]},{id:`connection-002`,code:`E-002`,kind:`connection`,sourceElementId:`text-002`,targetElementId:`text-003`,label:`ведёт к`,cssClasses:[`secondary-flow`]}]}]};function Kd(e){let t=e.spaces.find(t=>t.id===e.activeSpaceId);if(!t)throw Error(`Active Space ${e.activeSpaceId} does not exist.`);return t}function qd(e){return[`# Пространство`,`code = ${e.code}`,`title = ${e.title}`,`textObjects = ${e.textObjects.length}`,`regions = ${e.regions.length}`,`connections = ${e.connections.length}`].join(`
-`)}var Jd=`/*
+`,Fd=1100,Id=640,Ld=24,Rd=20,zd=/^-?[_a-zA-Z]+[_a-zA-Z0-9-]*$/;function Bd(e,t){return[...e,...t.filter(e=>zd.test(e))].join(` `)}function Vd(e){return{left:e.x,top:e.y,width:e.width,height:e.height}}function Hd(e){let t={left:e.x,top:e.y};return e.resizeMode===`auto-width`?t:e.resizeMode===`auto-height`?{...t,width:e.width}:{...t,width:e.width,height:e.height}}function Ud(e,t,n){return{...e,x:t,y:n}}function Wd(e){let t=Math.max(1,e.content.split(`
+`).length);if(e.geometry.resizeMode===`fixed`)return{x:e.geometry.x,y:e.geometry.y,width:e.geometry.width,height:e.geometry.height};if(e.geometry.resizeMode===`auto-height`){let t=Math.max(1,Math.floor(e.geometry.width/9)),n=e.content.split(`
+`).reduce((e,n)=>e+Math.max(1,Math.ceil(n.length/t)),0);return{x:e.geometry.x,y:e.geometry.y,width:e.geometry.width,height:Math.max(Rd,n*27)}}return{x:e.geometry.x,y:e.geometry.y,width:Math.max(Ld,Math.min(840,Math.max(...e.content.split(`
+`).map(e=>e.length))*9.2)),height:Math.max(Rd,t*27)}}function Gd(e){return{x:e.x+e.width/2,y:e.y+e.height/2}}function Kd(e,t){let n=Gd(e),r=Gd(t),i=r.x-n.x,a=r.y-n.y;if(Math.abs(i)>=Math.abs(a)){let a=i>=0?1:-1,o={x:n.x+a*e.width/2,y:n.y},s={x:r.x-a*t.width/2,y:r.y},c=Math.max(56,Math.abs(s.x-o.x)*.42);return{d:`M ${o.x} ${o.y} C ${o.x+a*c} ${o.y}, ${s.x-a*c} ${s.y}, ${s.x} ${s.y}`,label:{x:(o.x+s.x)/2,y:(o.y+s.y)/2-10}}}let o=a>=0?1:-1,s={x:n.x,y:n.y+o*e.height/2},c={x:r.x,y:r.y-o*t.height/2},l=Math.max(56,Math.abs(c.y-s.y)*.42);return{d:`M ${s.x} ${s.y} C ${s.x} ${s.y+o*l}, ${c.x} ${c.y-o*l}, ${c.x} ${c.y}`,label:{x:(s.x+c.x)/2+12,y:(s.y+c.y)/2}}}function qd({connection:e,source:t,target:n,sourceCode:r,targetCode:i,markerId:a}){let o=Kd(t,n);return(0,Z.jsxs)(`g`,{className:Bd([`connection`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,"data-source-code":r,"data-target-code":i,role:`group`,"aria-label":`Связь ${e.code}: ${r} — ${i}. ${e.label}`,children:[(0,Z.jsx)(`path`,{className:`connection-line`,d:o.d,markerEnd:`url(#${a})`}),(0,Z.jsx)(`text`,{className:`connection-label`,x:o.label.x,y:o.label.y,children:e.label})]})}function Jd({textObject:e,selected:t,setElementRef:n,onSelect:r,onGeometryChange:i}){let a=(0,_.useRef)(null),o=e=>{let t=a.current;!t||t.pointerId!==e.pointerId||(a.current=null,e.currentTarget.hasPointerCapture(e.pointerId)&&e.currentTarget.releasePointerCapture(e.pointerId))};return(0,Z.jsx)(`article`,{className:Bd([`text-object`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,"data-resize-mode":e.geometry.resizeMode,"data-selected":t?`true`:`false`,ref:t=>n(e.id,t),style:Hd(e.geometry),tabIndex:0,"aria-label":`Текстовый объект ${e.code}`,"aria-selected":t,onFocus:()=>r(e.id),onPointerDown:t=>{t.button===0&&(t.preventDefault(),t.stopPropagation(),r(e.id),t.currentTarget.setPointerCapture(t.pointerId),a.current={pointerId:t.pointerId,startClientX:t.clientX,startClientY:t.clientY,startX:e.geometry.x,startY:e.geometry.y})},onPointerMove:t=>{let n=a.current;!n||n.pointerId!==t.pointerId||(t.preventDefault(),i(e.id,Ud(e.geometry,Math.round(n.startX+t.clientX-n.startClientX),Math.round(n.startY+t.clientY-n.startClientY))))},onPointerUp:o,onPointerCancel:o,onLostPointerCapture:o,children:(0,Z.jsx)(`p`,{className:`text-object-content`,children:e.content})})}function Yd(e,t,n,r){let i=n-t.startClientX,a=r-t.startClientY,o=t.handle.includes(`w`),s=t.handle.includes(`e`),c=t.handle.includes(`n`),l=t.handle.includes(`s`),u=t.startRect.width,d=t.startRect.height,f=t.startX,p=t.startY;return s&&(u=Math.max(Ld,t.startRect.width+i)),o&&(u=Math.max(Ld,t.startRect.width-i),f=t.startX+t.startRect.width-u),l&&(d=Math.max(Rd,t.startRect.height+a)),c&&(d=Math.max(Rd,t.startRect.height-a),p=t.startY+t.startRect.height-d),t.handle===`e`||t.handle===`w`?{x:Math.round(f),y:Math.round(p),width:Math.round(u),resizeMode:`auto-height`}:{x:Math.round(f),y:Math.round(p),width:Math.round(u),height:Math.round(d),resizeMode:`fixed`}}function Xd({textObject:e,rect:t,onGeometryChange:n}){let r=(0,_.useRef)(null),[i,a]=(0,_.useState)(null),o=(0,_.useRef)(null),s=[`nw`,`n`,`ne`,`e`,`se`,`s`,`sw`,`w`];(0,_.useLayoutEffect)(()=>{let e=r.current;e&&a(e.shadowRoot??e.attachShadow({mode:`open`}))},[]);let c=e=>{let t=o.current;!t||t.pointerId!==e.pointerId||(o.current=null,e.currentTarget.hasPointerCapture(e.pointerId)&&e.currentTarget.releasePointerCapture(e.pointerId))};return(0,Z.jsx)(`div`,{ref:r,"aria-hidden":`true`,style:{position:`absolute`,zIndex:20,left:t.x,top:t.y,width:t.width,height:t.height,overflow:`visible`,pointerEvents:`none`},children:i&&(0,Nd.createPortal)((0,Z.jsxs)(Z.Fragment,{children:[(0,Z.jsx)(`style`,{children:`:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.selection-box {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #0d99ff;
+  pointer-events: none;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #0d99ff;
+  border-radius: 1px;
+  background: #ffffff;
+  appearance: none;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.resize-handle:focus-visible {
+  outline: 2px solid #0d99ff;
+  outline-offset: 2px;
+}
+
+.is-nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.is-n { top: -5px; left: calc(50% - 4.5px); cursor: ns-resize; }
+.is-ne { top: -5px; right: -5px; cursor: nesw-resize; }
+.is-e { top: calc(50% - 4.5px); right: -5px; cursor: ew-resize; }
+.is-se { right: -5px; bottom: -5px; cursor: nwse-resize; }
+.is-s { bottom: -5px; left: calc(50% - 4.5px); cursor: ns-resize; }
+.is-sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+.is-w { top: calc(50% - 4.5px); left: -5px; cursor: ew-resize; }
+
+@media (pointer: coarse) {
+  .resize-handle {
+    width: 13px;
+    height: 13px;
+  }
+
+  .is-nw { top: -7px; left: -7px; }
+  .is-n { top: -7px; left: calc(50% - 6.5px); }
+  .is-ne { top: -7px; right: -7px; }
+  .is-e { top: calc(50% - 6.5px); right: -7px; }
+  .is-se { right: -7px; bottom: -7px; }
+  .is-s { bottom: -7px; left: calc(50% - 6.5px); }
+  .is-sw { bottom: -7px; left: -7px; }
+  .is-w { top: calc(50% - 6.5px); left: -7px; }
+}
+`}),(0,Z.jsx)(`div`,{className:`selection-box`,"data-resize-mode":e.geometry.resizeMode,children:s.map(r=>(0,Z.jsx)(`button`,{className:`resize-handle is-${r}`,type:`button`,tabIndex:-1,"aria-label":`Изменить размер ${e.code}: ${r}`,onDoubleClick:t=>{t.preventDefault(),t.stopPropagation(),n(e.id,{x:e.geometry.x,y:e.geometry.y,resizeMode:`auto-width`})},onPointerDown:n=>{n.button===0&&(n.preventDefault(),n.stopPropagation(),n.currentTarget.setPointerCapture(n.pointerId),o.current={pointerId:n.pointerId,handle:r,startClientX:n.clientX,startClientY:n.clientY,startRect:t,startX:e.geometry.x,startY:e.geometry.y})},onPointerMove:t=>{let r=o.current;!r||r.pointerId!==t.pointerId||(t.preventDefault(),n(e.id,Yd(e,r,t.clientX,t.clientY)))},onPointerUp:c,onPointerCancel:c,onLostPointerCapture:c},r))})]}),i)})}function Zd(e,t){if(e.size!==t.size)return!1;for(let[n,r]of t){let t=e.get(n);if(!t||t.x!==r.x||t.y!==r.y||t.width!==r.width||t.height!==r.height)return!1}return!0}function Qd({space:e,userCss:t,selectedTextObjectId:n,onSelectSpace:r,onSelectTextObject:i,onTextGeometryChange:a}){let o=(0,_.useRef)(null),s=(0,_.useRef)(new Map),[c,l]=(0,_.useState)(new Map),u=`space-arrow-${e.id}`,d=(0,_.useCallback)((e,t)=>{t?s.current.set(e,t):s.current.delete(e)},[]),f=(0,_.useCallback)(()=>{let e=o.current;if(!e)return;let t=e.getBoundingClientRect(),n=new Map;for(let[e,r]of s.current){let i=r.getBoundingClientRect();n.set(e,{x:Math.round((i.left-t.left)*100)/100,y:Math.round((i.top-t.top)*100)/100,width:Math.round(i.width*100)/100,height:Math.round(i.height*100)/100})}l(e=>Zd(e,n)?e:n)},[]);(0,_.useLayoutEffect)(()=>{let e=new ResizeObserver(f);for(let t of s.current.values())e.observe(t);let t=window.requestAnimationFrame(f);return window.addEventListener(`resize`,f),()=>{e.disconnect(),window.cancelAnimationFrame(t),window.removeEventListener(`resize`,f)}},[f,e.textObjects,t]);let p=new Map;for(let t of e.regions)p.set(t.id,{code:t.code,geometry:t.geometry});for(let t of e.textObjects)p.set(t.id,{code:t.code,geometry:c.get(t.id)??Wd(t)});let m=n?e.textObjects.find(e=>e.id===n)??null:null,h=m?c.get(m.id)??Wd(m):null;return(0,Z.jsxs)(Z.Fragment,{children:[(0,Z.jsx)(`style`,{"data-space-style":`base`,children:Pd}),(0,Z.jsx)(`style`,{"data-space-style":`user`,children:t}),(0,Z.jsx)(`div`,{className:Bd([`space`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,onPointerDown:r,children:(0,Z.jsxs)(`div`,{className:`space-world`,ref:o,children:[(0,Z.jsxs)(`div`,{className:`space-identity`,"aria-label":`Пространство ${e.code}: ${e.title}`,children:[(0,Z.jsx)(`span`,{className:`space-identity-code`,children:e.code}),(0,Z.jsx)(`span`,{className:`space-identity-title`,children:e.title})]}),e.regions.map(e=>(0,Z.jsx)(`section`,{className:Bd([`region`,`space-element`],e.cssClasses),"data-kind":e.kind,"data-code":e.code,style:Vd(e.geometry),"aria-label":`Область ${e.code}: ${e.title}`,children:(0,Z.jsxs)(`header`,{className:`region-header`,children:[(0,Z.jsx)(`span`,{className:`element-code`,children:e.code}),(0,Z.jsx)(`h2`,{className:`region-title`,children:e.title})]})},e.id)),(0,Z.jsxs)(`svg`,{className:`connections-layer`,viewBox:`0 0 ${Fd} ${Id}`,preserveAspectRatio:`none`,"aria-label":`Связи Пространства`,children:[(0,Z.jsx)(`defs`,{children:(0,Z.jsx)(`marker`,{id:u,markerWidth:`8`,markerHeight:`8`,refX:`7`,refY:`4`,orient:`auto`,markerUnits:`strokeWidth`,children:(0,Z.jsx)(`path`,{className:`connection-arrow`,d:`M 0 0 L 8 4 L 0 8 Z`})})}),e.connections.map(e=>{let t=p.get(e.sourceElementId),n=p.get(e.targetElementId);return!t||!n?null:(0,Z.jsx)(qd,{connection:e,source:t.geometry,target:n.geometry,sourceCode:t.code,targetCode:n.code,markerId:u},e.id)})]}),e.textObjects.map(e=>(0,Z.jsx)(Jd,{textObject:e,selected:e.id===n,setElementRef:d,onSelect:i,onGeometryChange:a},e.id)),m&&h&&(0,Z.jsx)(Xd,{textObject:m,rect:h,onGeometryChange:a})]})})]})}function $d(e){let t=(0,_.useRef)(null),[n,r]=(0,_.useState)(null);return(0,_.useLayoutEffect)(()=>{let e=t.current;e&&r(e.shadowRoot??e.attachShadow({mode:`open`}))},[]),(0,Z.jsx)(`div`,{className:`space-shadow-host`,ref:t,role:`region`,"aria-label":`Активное Пространство ${e.space.code}: ${e.space.title}`,children:n&&(0,Nd.createPortal)((0,Z.jsx)(Qd,{...e}),n)})}var ef={activeSpaceId:`space-001`,spaces:[{id:`space-001`,code:`S-001`,kind:`space`,title:`Лаборатория текста`,cssClasses:[`demo-space`],regions:[{id:`region-001`,code:`A-001`,kind:`region`,title:`Совместное исследование`,cssClasses:[`research-area`],geometry:{x:70,y:76,width:940,height:500}}],textObjects:[{id:`text-001`,code:`X-001`,kind:`text`,content:`Идея: Пространство является общей рабочей средой человека и ИИ.`,cssClasses:[`idea`],geometry:{x:132,y:158,resizeMode:`auto-width`}},{id:`text-002`,code:`X-002`,kind:`text`,content:`Вопрос: какие свойства должны быть частью модели, а какие — только представлением?`,cssClasses:[`question`],geometry:{x:156,y:286,resizeMode:`auto-width`}},{id:`text-003`,code:`X-003`,kind:`text`,content:`Решение: пользовательский CSS хранится отдельно и не изменяет смысловые данные.`,cssClasses:[`decision`],geometry:{x:180,y:414,resizeMode:`auto-width`}}],connections:[{id:`connection-001`,code:`E-001`,kind:`connection`,sourceElementId:`text-001`,targetElementId:`text-002`,label:`уточняет`,cssClasses:[`main-flow`]},{id:`connection-002`,code:`E-002`,kind:`connection`,sourceElementId:`text-002`,targetElementId:`text-003`,label:`ведёт к`,cssClasses:[`secondary-flow`]}]}]};function tf(e){let t=e.spaces.find(t=>t.id===e.activeSpaceId);if(!t)throw Error(`Active Space ${e.activeSpaceId} does not exist.`);return t}function nf(e,t){return e.textObjects.find(e=>e.id===t)??null}function rf(e,t,n,r){return{...e,spaces:e.spaces.map(e=>e.id===t?{...e,textObjects:e.textObjects.map(e=>e.id===n?r(e):e)}:e)}}function af(e){return[`# Пространство`,`code = ${e.code}`,`title = ${e.title}`,`textObjects = ${e.textObjects.length}`,`regions = ${e.regions.length}`,`connections = ${e.connections.length}`].join(`
+`)}var of=`/*
+  ПОЛЬЗОВАТЕЛЬСКИЙ CSS ПРОСТРАНСТВА
+
+  Базовый TextObject — только текст.
+  Рамка и маркеры размера появляются только у выбранного объекта.
+  CSS ниже меняет оформление Пространства и смысловые акценты,
+  но не превращает текст в карточки.
+*/
+
+:host {
+  --space-background: #f7f8fb;
+  --space-text-color: #172033;
+  --space-muted-color: #687086;
+  --space-border-color: #d7dce7;
+  --space-region-color: rgba(255, 255, 255, .38);
+  --space-connection-color: #7a8499;
+}
+
+.space.demo-space {
+  background:
+    radial-gradient(circle at 1px 1px, rgba(80, 94, 125, .13) 1px, transparent 0) 0 0 / 24px 24px,
+    linear-gradient(145deg, #fafbfe 0%, var(--space-background) 58%, #f0f2f7 100%);
+}
+
+.space-identity {
+  padding: 6px 9px;
+  border: 1px solid rgba(116, 129, 157, .20);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .74);
+  backdrop-filter: blur(10px);
+}
+
+.region.research-area {
+  border-style: dashed;
+  border-color: rgba(99, 102, 241, .30);
+  background: rgba(238, 242, 255, .24);
+}
+
+.text-object {
+  transition: color 140ms ease, opacity 140ms ease;
+}
+
+.text-object:hover {
+  opacity: .72;
+}
+
+.text-object.idea {
+  color: #4f46e5;
+  font-weight: 620;
+}
+
+.text-object.question {
+  color: #b45309;
+}
+
+.text-object.decision {
+  color: #047857;
+  font-weight: 620;
+}
+
+.connection.main-flow {
+  color: #6366f1;
+}
+
+.connection.secondary-flow {
+  color: #059669;
+}
+
+.connection.secondary-flow .connection-line {
+  stroke-dasharray: 7 6;
+}
+
+.connection-label {
+  font-weight: 650;
+}
+
+@media (max-width: 700px) {
+  .text-object-content {
+    font-size: 16px;
+  }
+}
+`;function sf(e){return`modelCanvas.lab.space.${e}.userCss.v2`}function cf(e){return`modelCanvas.lab.space.${e}.userCss.v1`}function lf(e){if(typeof window>`u`)return of;try{let t=window.localStorage.getItem(sf(e));if(t!==null)return t;let n=window.localStorage.getItem(cf(e));if(n===null)return of;let r=n===`/*
   ПОЛЬЗОВАТЕЛЬСКИЙ КАСКАД СТИЛЕЙ ПРОСТРАНСТВА
 
   Этот CSS подключается после базовой таблицы стилей Пространства.
@@ -322,4 +481,4 @@ Error generating stack: `+e.message+`
     font-size: 13px;
   }
 }
-`;function Yd(e){return`modelCanvas.lab.space.${e}.userCss.v1`}function Xd(e){if(typeof window>`u`)return Jd;try{let t=window.localStorage.getItem(Yd(e));return t===null?Jd:t}catch{return Jd}}function Zd(e,t){try{window.localStorage.setItem(Yd(e),t)}catch{}}function Qd(){let e=Kd(Gd),[t,n]=(0,_.useState)(()=>Xd(e.id)),r=qd(e);return(0,Z.jsxs)(`main`,{className:`lab-canvas`,"aria-label":`Model Canvas Laboratory`,children:[(0,Z.jsx)(Wd,{space:e,userCss:t}),(0,Z.jsx)($,{selectionLabel:`Пространство`,contextCode:`${e.code} · ${e.title}`,styleBindingKey:`space-css:${e.id}`,styleValue:t,onStylePreview:(e,t)=>n(t),onStyleCommit:async(t,r)=>(Zd(e.id,r),n(r),r),bindingKey:`space:${e.id}`,value:r,editable:!1,multiline:!0,ariaLabel:`Текстовая проекция Пространства`,spellCheck:!1,autoCapitalize:`none`,onPreview:()=>void 0,onCommit:async()=>null})]})}v.createRoot(document.getElementById(`root`)).render((0,Z.jsx)(_.StrictMode,{children:(0,Z.jsx)(Qd,{})}));
+`?of:n;return window.localStorage.setItem(sf(e),r),r}catch{return of}}function uf(e,t){try{window.localStorage.setItem(sf(e),t)}catch{}}function df(){let[e,t]=(0,_.useState)(ef),n=tf(e),[r,i]=(0,_.useState)({kind:`space`,id:n.id}),[a,o]=(0,_.useState)(()=>lf(n.id)),s=r.kind===`text`?nf(n,r.id):null,c=e=>{s&&t(t=>rf(t,n.id,s.id,t=>({...t,content:e})))},l=(e,r)=>{t(t=>rf(t,n.id,e,e=>({...e,geometry:r})))},u=async(e,t)=>(uf(n.id,t),o(t),t),d=s?.content??af(n),f=s?`text:${s.id}`:`space:${n.id}`,p=s?`Текстовый объект`:`Пространство`,m=s?`${s.code} · ${s.geometry.resizeMode}`:`${n.code} · ${n.title}`;return(0,Z.jsxs)(`main`,{className:`lab-canvas`,"aria-label":`Model Canvas Laboratory`,children:[(0,Z.jsx)($d,{space:n,userCss:a,selectedTextObjectId:s?.id??null,onSelectSpace:()=>i({kind:`space`,id:n.id}),onSelectTextObject:e=>i({kind:`text`,id:e}),onTextGeometryChange:l}),(0,Z.jsx)($,{selectionLabel:p,contextCode:m,styleBindingKey:`space-css:${n.id}`,styleValue:a,onStylePreview:(e,t)=>o(t),onStyleCommit:u,bindingKey:f,value:d,editable:!!s,multiline:!0,ariaLabel:s?`Содержимое Текстового объекта ${s.code}`:`Текстовая проекция Пространства`,spellCheck:!!s,autoCapitalize:s?`sentences`:`none`,onPreview:(e,t)=>c(t),onCommit:async(e,t)=>(c(t),t)})]})}v.createRoot(document.getElementById(`root`)).render((0,Z.jsx)(_.StrictMode,{children:(0,Z.jsx)(df,{})}));
